@@ -17,28 +17,24 @@ void setup()
 }
 
 void loop()
-{
-	//effect_1(150);	
-	//effect_2(100);	
-	effect_3(5);	
-	//effect_5(5, 25);	
+{		
+	run_right_down(50);
+	delay(500);
+	
+	run_left_up(50);
+	delay(500);
+	
+	run_random(10);
+	delay(500);
+	
+	run_matrix(25, 100);
+	delay(500);	
 }
 
-void effect_1(int delayVal)
-{
-	for (int j = 0; j < 8; j++)
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			maxMatrix.setDot(i, j, HIGH);
-			delay(delayVal);
-		}
-		delay(delayVal);
-	}
-	maxMatrix.clear();
-}
-
-void effect_2(int delayVal)
+/*
+ * Rozsvecovanie LED diod z prava dolu (po riadkoch)
+ */
+void run_right_down(int delayVal)
 {	
 	for (int row = 0; row < 8; row++)
 	{	
@@ -46,25 +42,51 @@ void effect_2(int delayVal)
 		delay(delayVal);
 		for (int column = 0; column < 8; column++)
 		{
-			maxMatrix.shiftRight();
+			maxMatrix.shiftRight(); //posun pozicie doprava
 			delay(delayVal);
 		}		
-		maxMatrix.shiftDown();
+		maxMatrix.shiftDown(); //posun pozicie dolu
 		delay(delayVal);
 	}
 	maxMatrix.clear();
 }
 
-void effect_3(int delayVal)
+/*
+ * Rozsvecovanie LED diod z lava hore (po riadkoch)
+ */
+void run_left_up(int delayVal)
 {
-	int row = random(0, 8);
-	int column = random(0, 8);
-	maxMatrix.setDot(column, row, HIGH);
-	delay(delayVal);	
+	for (int row = 7; row >= 0; row--)
+	{
+		maxMatrix.setDot(7, row, HIGH);
+		delay(delayVal);
+		for (int column = 0; column < 8; column++)
+		{
+			maxMatrix.shiftLeft(); //posun pozicie dolava
+			delay(delayVal);
+		}
+		maxMatrix.shiftUp(); //posun pozicie hore
+		delay(delayVal);
+	}
 	maxMatrix.clear();
 }
 
-void effect_4(int delayVal, int colIndex)
+/*
+ * Rozsvecovanie LED diod nahodne
+ */
+void run_random(int delayVal)
+{
+	for (int i = 0; i < 64; i++)
+	{
+		int row = random(0, 8);
+		int column = random(0, 8);
+		maxMatrix.setDot(column, row, HIGH);
+		delay(delayVal);
+		maxMatrix.clear();
+	}	
+}
+
+void run_matrix_column(int delayVal, int colIndex)
 {
 	int row = random(0, 8);
 	int rowIndexMax = 8 - row;
@@ -77,11 +99,14 @@ void effect_4(int delayVal, int colIndex)
 	}			
 }
 
-void effect_5(int delayValMin, int delayValMax)
+/*
+ * Jednoduchy efekt alla Matrix
+ */
+void run_matrix(int delayValMin, int delayValMax)
 {
 	for (int columnIndex = 0; columnIndex < 8; columnIndex++)
 	{
 		int delayVal = random(delayValMin, delayValMax);
-		effect_4(delayVal, columnIndex);
+		run_matrix_column(delayVal, columnIndex);
 	}		
 }
